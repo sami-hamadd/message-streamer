@@ -58,7 +58,11 @@ const MessageList = () => {
 
             const message = messages[messageIndexRef.current];
             messageIndexRef.current += 1;
-
+            if (!message || !message.message) {
+                // Skip this message if it's invalid
+                setTimeout(streamNextMessage, 500); // Move to the next message after a delay
+                return <Text>No messages!</Text>;
+            }
             let charIndex = 0;
             let currentText = '';
 

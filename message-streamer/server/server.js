@@ -22,12 +22,28 @@ const server = app.listen(PORT, () => {
 const wss = new WebSocketServer({ server });
 
 // Function to read the file content and format it
+// /server/server.js
+
 const readFileContent = () => {
-    const content = fs.readFileSync(TEXT_FILE_PATH, 'utf-8');
-    const messages = content.trim().split('\n').map(line => {
-        const [role, message] = line.split(': ', 2);
-        return { role, message };
-    });
+    const content = fs.readFileSync(TEXT_FILE_PATH, 'utf-8').trim();
+
+    // Return an empty array if the content is empty
+    if (!content) {
+        return [];
+    }
+
+    const messages = content
+        .split('\n')
+        .filter(line => line.trim() !== '') // Filter out empty lines
+        .map(line => {
+            const [role, message] = line.split(': ', 2);
+            // Only include lines that have both role and message
+            if (role && message) {
+                return { role, message };
+            }
+        })
+        .filter(Boolean); // Remove undefined entries resulting from invalid lines
+
     return messages;
 };
 
